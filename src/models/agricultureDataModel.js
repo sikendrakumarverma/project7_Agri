@@ -23,7 +23,7 @@ const agricultureDataSchema= new mongoose.Schema({
         lowercase: true,
         trim: true
     },
-    soilTepe: {
+    soilType: {
         type: String,
         required: true,
         trim: true

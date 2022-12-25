@@ -18,7 +18,7 @@ router.post("/registerAdmin",adminController.createAdmin)
 router.post("/adminLogin",adminController.adminLogin)
 
 //  ................................Organisation's API'S ..................................................................
-router.post("/registerOrganisatio",organisationController.createOrganisation)
+router.post("/registerOrganisation",organisationController.createOrganisation)
 
 router.post("/organisationLogin",organisationController.organisationLogin)
 

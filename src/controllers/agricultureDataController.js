@@ -1,6 +1,7 @@
 const agricultureDataModel = require("../models/agricultureDataModel")
 const cropsModel = require("../models/cropsModel")
 const soilsModel = require("../models/soilsModel")
+const dataValidation = require("../validations/dataValidation");
 
 const createAgricultureData = async function (req, res) {
     try {
@@ -9,7 +10,7 @@ const createAgricultureData = async function (req, res) {
         if (Object.values(data).length == 0) return res.status(400).send({ status: false, message: "data must be present" });
 
         // using destructuring of body data.
-        const { state, cropName, cropMonth, soilTepe, cropWeather, cropCultivatedQuantity, cropRate } = data;
+        const { state, cropName, cropMonth, soilType, cropWeather, cropCultivatedQuantity, cropRate } = data;
 
         if (!dataValidation.isValidState(state)) return res.status(400).send({ status: false, message: "state should be string" });
 
@@ -17,7 +18,7 @@ const createAgricultureData = async function (req, res) {
 
         if (!dataValidation.isValidState(cropName)) return res.status(400).send({ status: false, message: "cropName should be string" });
         if (!dataValidation.isValidState(cropMonth)) return res.status(400).send({ status: false, message: "cropMonth should be string" });
-        if (!dataValidation.isValidState(soilTepe)) return res.status(400).send({ status: false, message: "soilTepe should be string" });
+        if (!dataValidation.isValidState(soilType)) return res.status(400).send({ status: false, message: "soilType should be string" });
         if (!dataValidation.isValidState(cropWeather)) return res.status(400).send({ status: false, message: "cropWeather should be string" });
         if (!dataValidation.isValidState(cropCultivatedQuantity)) return res.status(400).send({ status: false, message: "cropCultivatedQuantity should be string" });
         if (!dataValidation.isValidState(cropRate)) return res.status(400).send({ status: false, message: "cropRate should be string" });
@@ -26,11 +27,11 @@ const createAgricultureData = async function (req, res) {
         //Create admin data after format =>fname, lname, email, password
         const agricultureData = {
             state: state, cropName: cropName, cropMonth: cropMonth,
-            soilTepe: soilTepe, cropWeather: cropWeather, cropCultivatedQuantity: cropCultivatedQuantity, cropRate: cropRate
+            soilType: soilType, cropWeather: cropWeather, cropCultivatedQuantity: cropCultivatedQuantity, cropRate: cropRate
         };
 
-        const createAdmin = await agricultureDataModel.create(agricultureData);
-        return res.status(201).send({ status: true, message: "admin created successfully", data: agricultureData })
+        const createAgriData = await agricultureDataModel.create(agricultureData);
+        return res.status(201).send({ status: true, message: "admin created successfully", data:createAgriData  })
 
 
     } catch (error) {
@@ -48,7 +49,7 @@ const createAgricultureDataByOrganisation = async function (req, res) {
 
         // using destructuring of body data.
         let stateN = ""
-        const { state, cropName, cropMonth, soilTepe, cropWeather, cropCultivatedQuantity, cropRate } = data;
+        const { state, cropName, cropMonth, soilType, cropWeather, cropCultivatedQuantity, cropRate } = data;
 
         let findOrganisationState = await organisationModel.findOne({ _id: Id, isDeleted:false })
         if (state) {
@@ -63,7 +64,7 @@ const createAgricultureDataByOrganisation = async function (req, res) {
 
         if (!dataValidation.isValidState(cropName)) return res.status(400).send({ status: false, message: "cropName should be string" });
         if (!dataValidation.isValidState(cropMonth)) return res.status(400).send({ status: false, message: "cropMonth should be string" });
-        if (!dataValidation.isValidState(soilTepe)) return res.status(400).send({ status: false, message: "soilTepe should be string" });
+        if (!dataValidation.isValidState(soilType)) return res.status(400).send({ status: false, message: "soilType should be string" });
         if (!dataValidation.isValidState(cropWeather)) return res.status(400).send({ status: false, message: "cropWeather should be string" });
         if (!dataValidation.isValidState(cropCultivatedQuantity)) return res.status(400).send({ status: false, message: "cropCultivatedQuantity should be string" });
         if (!dataValidation.isValidState(cropRate)) return res.status(400).send({ status: false, message: "cropRate should be string" });
@@ -72,7 +73,7 @@ const createAgricultureDataByOrganisation = async function (req, res) {
         //Create admin data after format =>fname, lname, email, password
         const agricultureData = {
             state: stateN, cropName: cropName, cropMonth: cropMonth,
-            soilTepe: soilTepe, cropWeather: cropWeather, cropCultivatedQuantity: cropCultivatedQuantity, cropRate: cropRate
+            soilType: soilType, cropWeather: cropWeather, cropCultivatedQuantity: cropCultivatedQuantity, cropRate: cropRate
         };
 
         const createAdmin = await agricultureDataModel.create(agricultureData);
@@ -106,8 +107,8 @@ const getAgricultureData = async function (req, res) {
         if (cropMonth) {
             data.cropMonth = cropMonth
         }
-        if (soilTepe) {
-            data.soilTepe = soilTepe
+        if (soilType) {
+            data.soilType = soilType
         }
         if (cropWeather) {
             data.cropWeather = cropWeather
@@ -138,7 +139,7 @@ const updateAgricultureData = async function (req, res) {
         let eligibleState = req.OrganisationState
         let body = req.body
 
-        const { cropName, cropMonth, soilTepe, cropWeather, cropCultivatedQuantity, cropRate } = body
+        const { cropName, cropMonth, soilType, cropWeather, cropCultivatedQuantity, cropRate } = body
 
         const data = {}
         if (state) {
@@ -161,18 +162,18 @@ const updateAgricultureData = async function (req, res) {
         if (cropMonth) {
             data.cropMonth = cropMonth
         }
-        if (soilTepe) {
+        if (soilType) {
             // verify that soil property by searching in soilmodel
             // if not exist that soil than we add new soil with that's soil property
 
-            const checkSoil= await soilsModel.findOne( soilTepe )
-             if(!checkCrop){
+            const checkSoil= await soilsModel.findOne( soilType )
+             if(!checkSoil){
                 // Create new soil
-                const createSoil= await soilsModel.create(soilTepe)
-                data.soilTepe = soilTepe
+                const createSoil= await soilsModel.create(soilType)
+                data.soilType = soilType
              }else{
                 // verfing and add
-                data.soilTepe = soilTepe
+                data.soilType = soilType
              }
         }
         if (cropWeather) {

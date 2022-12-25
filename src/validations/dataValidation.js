@@ -22,7 +22,7 @@ const isValidRequestBody = function (data) {
 };
 
 const isValidEmail = (value) => {
-    if (!isValidName(value)) {
+    if (!isValidState(value)) {
         return "email is required and should be a string";
     }
     const regexForEmail = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
@@ -32,7 +32,7 @@ const isValidEmail = (value) => {
 }
 
 const isValidpass = (value) => {
-    if (!isValidName(value)) {
+    if (!isValidState(value)) {
         return "password is required.";
     }
 

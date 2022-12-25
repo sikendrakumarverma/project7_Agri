@@ -10,9 +10,10 @@ const createAdmin = async function (req, res) {
         if(Object.values(data).length==0) return res.status(400).send({ status: false, message: "data must be present" });
 
         // using destructuring of body data.
-        const { organisationId,adminId, email, password } = data;
+        const { state,organisationId,adminId, email, password } = data;
 
-        if(!dataValidation.isValidId(organisationId)) return res.status(400).send({ status: false, message: "organisationId should be string" });
+        if(!dataValidation.isValidId(Object.values(state)[0])) return res.status(400).send({ status: false, message: "state should be string" });
+        if(!dataValidation.isValidId(Object.values(organisationId)[0])) return res.status(400).send({ status: false, message: "organisationId should be string" });
 
         if(!dataValidation.isValidId(adminId)) return res.status(400).send({ status: false, message: "adminId should be string" });
 
