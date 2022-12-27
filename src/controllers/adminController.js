@@ -37,7 +37,7 @@ const createAdmin = async function (req, res) {
 
         //Create admin data after format => email, password
         const adminData = {
-            organisationId: organisationId, adminId: adminId, email: email,
+            state:state, organisationId: organisationId, adminId: adminId, email: email,
             password: hashpassword
         };
 
@@ -69,7 +69,7 @@ const adminLogin = async (req, res) => {
             return res.status(400).send({ status: false, message: "this email is not registered " });
         }
         pass=isEmailPresent.password
-        Id=isEmailPresent._id
+        Id=isEmailPresent._id.toString()
         } else {
         if(!dataValidation.isValidId(adminId)) return res.status(400).send({ status: false, message: "adminId should be string" });
         const adminIdPresent= await adminModel.findOne({ adminId });
@@ -77,7 +77,7 @@ const adminLogin = async (req, res) => {
             return res.status(400).send({ status: false, message: "this adminId is not registered " });
         }
         pass=adminIdPresent.password
-        Id=adminIdPresent._id
+        Id=adminIdPresent._id.toString()
        }
         
         const validPass= dataValidation.isValidpass(password)
@@ -90,7 +90,7 @@ const adminLogin = async (req, res) => {
         }
 
         // creating JWT
-        const token = jwt.sign({ organisationId: isEmailPresent._id }, "secretKey123", { expiresIn: "1h" });
+        const token = jwt.sign({ adminId: Id }, "secretKey123", { expiresIn: "1h" });
 
         //Format of data.
         let Data = {

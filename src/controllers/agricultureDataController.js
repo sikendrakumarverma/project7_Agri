@@ -1,4 +1,5 @@
-const agricultureDataModel = require("../models/agricultureDataModel")
+const agricultureDataModel = require("../models/agricultureDataModel");
+const organisationModel = require("../models/organisationModel");
 const cropsModel = require("../models/cropsModel")
 const soilsModel = require("../models/soilsModel")
 const dataValidation = require("../validations/dataValidation");
@@ -92,7 +93,7 @@ const getAgricultureData = async function (req, res) {
         // let Id = req.Id
         let query = req.query
 
-        const { state, organisationId, cropName, cropMonth, soilTepe, cropWeather, cropCultivatedQuantity, cropRate } = query
+        const { state, organisationId, cropName, cropMonth, soilType, cropWeather, cropCultivatedQuantity, cropRate } = query
 
         const data = {}
         if (state) {
@@ -136,10 +137,11 @@ const getAgricultureData = async function (req, res) {
 
 const updateAgricultureData = async function (req, res) {
     try {
-        let eligibleState = req.OrganisationState
+        let eligibleState = req.orgState
+        let Id=req.Id._id.toString()
         let body = req.body
 
-        const { cropName, cropMonth, soilType, cropWeather, cropCultivatedQuantity, cropRate } = body
+        const { state,cropName, cropMonth, soilType, cropWeather, cropCultivatedQuantity, cropRate } = body
 
         const data = {}
         if (state) {
@@ -152,7 +154,7 @@ const updateAgricultureData = async function (req, res) {
             const checkCrop= await cropsModel.findOne( {cropName:cropName} )
              if(!checkCrop){
                 // Create new crop
-                const createCrop= await cropsModel.create(cropName)
+                //const createCrop= await cropsModel.create(cropName)
                 data.cropName = cropName
              }else{
                 // verfing and add
@@ -185,7 +187,7 @@ const updateAgricultureData = async function (req, res) {
         if (cropRate) {
             data.cropRate = cropRate
         }
-        const updateData = await agricultureDataModel.findByIdAndUpdate({ _id: agricultureData._id.toString() }, data, { new: true })
+        const updateData = await agricultureDataModel.findByIdAndUpdate({ _id: Id }, data, { new: true })
         return res.status(200).send({ status: true, message: "agriculture data updateded successfully", data: updateData });
         //         else{
         //             const studentData = await studentModel.find();
@@ -202,9 +204,15 @@ const updateAgricultureData = async function (req, res) {
 
 const deleteAgricultureData = async function (req, res) {
     try {
-        let Id = req.agricultureId
+        // let Id = req.agricultureId;
+        let Id = req.params.agricultureId
 
-        const deleteData = await agricultureDataModel.findByIdAndUpdate({ _id: Id }, { $set: { isDeleted: true } }, { new: true })
+        const checkData = await agricultureDataModel.findOne({ _id: Id,isDeleted:false })
+        if(!checkData){ 
+            return res.status(404).send({ status: false, message: " data not found" })
+        }
+        await agricultureDataModel.findByIdAndUpdate({ _id: Id,isDeleted:false }, { $set: { isDeleted: true } }, { new: true })
+       
         return res.status(200).send({ status: true, message: "agriculture data deleted successfully" });
 
     } catch (error) {

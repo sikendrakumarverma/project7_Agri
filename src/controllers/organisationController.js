@@ -8,7 +8,7 @@ const createOrganisation = async function (req, res) {
     try {
 
         let data = req.body
-
+       console.log(data)
         if (!dataValidation.isValidRequestBody(data)) return res.status(400).send({ status: false, message: "data must be present" });
 
         // using destructuring of body data
@@ -68,6 +68,7 @@ const organisationLogin = async (req, res) => {
 
         //Input data validation
         let pass=""
+        let Id=""
         if(email){
         const validEmail= dataValidation.isValidEmail(email)
         if(validEmail) return res.status(400).send({ status: false, message: validEmail });
@@ -75,14 +76,16 @@ const organisationLogin = async (req, res) => {
         if (!isEmailPresent) {
             return res.status(400).send({ status: false, message: "this email is not registered " });
         }
-        pass=isEmailPresent.password
+        pass=isEmailPresent.password;
+        Id=isEmailPresent._id.toString()
         } else {
         if(!dataValidation.isValidId(organisationId)) return res.status(400).send({ status: false, message: "organisationId should be string" });
-        const organisationIdPresent= await organisationModel.findOne({ adminId });
+        const organisationIdPresent= await organisationModel.findOne({ organisationId });
         if (!organisationIdPresent) {
-            return res.status(400).send({ status: false, message: "this adminId is not registered " });
+            return res.status(400).send({ status: false, message: "this organisationId is not registered " });
         }
-        pass=organisationIdPresent.password
+        pass=organisationIdPresent.password;
+        Id=organisationIdPresent._id.toString()
        }
         const validPass= dataValidation.isValidpass(password)
         if(validPass) return res.status(400).send({ status: false, message: validPass });
@@ -94,10 +97,11 @@ const organisationLogin = async (req, res) => {
         }
 
         // creating JWT
-        const token = jwt.sign({ organisationId: isEmailPresent._id }, "secretKey123", { expiresIn: "1h" });
+        const token = jwt.sign({ organisationId: Id }, "secretKey123", { expiresIn: "1h" });
 
         //Format of data.
         let Data = {
+            id: Id,
             token: token
         }
          //res.headers.x-api-key = token;

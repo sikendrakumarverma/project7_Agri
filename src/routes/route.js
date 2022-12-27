@@ -25,15 +25,15 @@ router.post("/organisationLogin",organisationController.organisationLogin)
 //  ................................AgricultureData's API'S ..................................................................
 router.post("/addAgricultureData",agricultureDataController.createAgricultureData)
 
-router.post("/addAgricultureDataByOrg",agricultureDataController.createAgricultureDataByOrganisation)
+router.post("/addAgricultureDataByOrg",Auth.authentication,agricultureDataController.createAgricultureDataByOrganisation)
 
 router.get("/getAgricultureData" ,agricultureDataController.getAgricultureData)
 
-router.put("/updateAgricultureData/:agriculturId",agricultureDataController.updateAgricultureData)
+router.put("/updateAgricultureData/:agricultureId",Auth.authentication, Auth.authorization,agricultureDataController.updateAgricultureData)
 
 //router.put("/updateAgricultureDataByOrg/:agriculturId",agricultureDataController.updateAgricultureDataByOrganisation)
 
-router.put("/deleteAgricultureData/:agriculturId",agricultureDataController.deleteAgricultureData)
+router.put("/deleteAgricultureData/:agricultureId",agricultureDataController.deleteAgricultureData)
 
 //  ................................Crop's API'S .............................................................
 router.post("/addCrop",cropsController.createCrop)
@@ -41,8 +41,8 @@ router.post("/addCrop",cropsController.createCrop)
 //  ................................Soil's API'S .............................................................
 router.post("/addSoil",soilsController.createSoil)
 
-// router.all("/**", function(req,res){
-//     res.status(400).send("Invlaid endPoint")
-// })
+router.all("/**", function(req,res){
+    res.status(400).send("Invlaid endPoint")
+})
 
 module.exports=router

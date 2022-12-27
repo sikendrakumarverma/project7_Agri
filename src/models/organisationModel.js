@@ -6,14 +6,14 @@ const organisationSchema= new mongoose.Schema({
     state: {
         type: String,
         required: true,
-        enum: ["Jharkhand", "Bihar", "UP","Odisa","MP","WB"],
+        enum: ["jharkhand", "bihar", "uttar pradesh","madha pradesh","west bangal"],
         trim: true
     },
     organisationId: {        
         type : String,
         required : [true, "organisationId must be provided"],
         unique: true,
-        enum: ["Jharkhand", "Bihar", "UP","Odisa","MP","WB"],
+        enum: ["JH12345", "BR12345", "UP12345","MP12345","WB12345"],
         trim     : true 
     },
     email: {

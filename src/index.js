@@ -12,9 +12,9 @@ mongoose.connect("mongodb+srv://sikendrakumar:wtCKMS5cQpIjdBOE@cluster0.oexuw0b.
 
 app.use("/",route)
 
-app.use("/*", function (req, res) {
-    return res.status(400).send({status: false,message: "Please Enter Valid Path Or Parameters !!!!",});
-  });
+// app.use("/*", function (req, res) {
+//     return res.status(400).send({status: false,message: "Please Enter Valid Path Or Parameters !!!!",});
+//   });
   
 
 app.listen(3000 , function(){
